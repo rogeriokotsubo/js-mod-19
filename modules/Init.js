@@ -1,4 +1,5 @@
 import Bingo from './Bingo.js';
+import DrawInterval from './DrawInterval.js'
 import { btnInitHover } from './auxFunctions.js';
 import { msg, btnInit } from '../index.js'; 
   
@@ -10,7 +11,7 @@ export default function Init(_minimo, _maximo, _nInCards, _nCards){
     const newNumber = document.querySelector('#ctn-number');
     const ctnBoard = document.querySelector('#ctn-board');
     let gameBingo = '';
-    let dInterval = 0;
+    let dInterval = '';
 
     try{ 
         checkValues();
@@ -20,7 +21,7 @@ export default function Init(_minimo, _maximo, _nInCards, _nCards){
     };
 
     newNumber.innerHTML='&nbsp;';
-    gameBingo = Bingo(minimo, maximo, nInCards, nCards);
+    gameBingo = new Bingo(minimo, maximo, nInCards, nCards);
     ctnBoard.style.display = 'grid';
     game();
 
@@ -28,9 +29,8 @@ export default function Init(_minimo, _maximo, _nInCards, _nCards){
         btnInit.disabled = true;
         btnInitHover();
         newNumber.style.display = 'flex';
-        dInterval = setInterval(function(){
-            drawNewNumber();
-        }, 5000);
+        dInterval = DrawInterval();
+        dInterval.drawSetInterval(5000);
     }
 
     function drawNewNumber(){
@@ -39,14 +39,14 @@ export default function Init(_minimo, _maximo, _nInCards, _nCards){
         for (let i=0; i<nCards; i++){
             res = gameBingo.objCards[i].checkCardFull();
             if (res){
-                msg.innerHTML += `Cartela ${i+1} comeu barriga! `;
+                msg.innerHTML += `Cartela ${i+1} comeu bola! `;
             }
         }
 
         const num = gameBingo.objBoard.drawNumber();
         if (num===-1){
             msg.textContent = 'Foram sorteados todos os números!';
-            clearInterval(dInterval);
+            dInterval.drawClearInterval();
             btnInit.disabled = false;
             btnInitHover();            
             return false;
@@ -73,7 +73,6 @@ export default function Init(_minimo, _maximo, _nInCards, _nCards){
         }
     }
 
-    return dInterval;
-  }
+    return { drawNewNumber, dInterval };
+}
 
-  

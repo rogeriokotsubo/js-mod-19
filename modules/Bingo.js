@@ -1,6 +1,6 @@
 import Card from './Card.js';
 import Raffler from './Raffler.js';
-import { msg, btnInit, drawInterval } from '../index.js';
+import { msg, btnInit, newGame } from '../index.js';
 import { btnInitHover } from './auxFunctions.js';
 
 export default function Bingo(_min, _max, _numbers, _nCards) {
@@ -19,14 +19,14 @@ export default function Bingo(_min, _max, _numbers, _nCards) {
         throw e.message;
     };
 
-    objBoard=Raffler(min, max);
+    objBoard = new Raffler(min, max);
     initCards();
     drawCards();
 
     function initCards(){
         let card = '';
         for (let i=0; i<nCards; i++){
-            card = Card(min, max, numbers) ;
+            card = new Card(min, max, numbers) ;
             objCards.push(card);
         }
     }
@@ -64,7 +64,7 @@ export default function Bingo(_min, _max, _numbers, _nCards) {
     function callBingo(_iCard){
         const winner = objCards[_iCard].checkCardFull();
         if (winner){
-            clearInterval(drawInterval);
+            newGame.dInterval.drawClearInterval();
             btnInit.disabled = false;
             btnInitHover(); 
             msg.innerHTML = `Cartela ${_iCard+1} é vencedora!`;
